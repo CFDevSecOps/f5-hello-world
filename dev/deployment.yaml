@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cssdemo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cssdemo
+  template:
+    metadata:
+      labels:
+        app: cssdemo
+        tier: frontend
+    spec:
+      containers:
+        - name: cssdemo
+          image: devsecops1.jfrog.io/css/css-image:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5060
+      imagePullSecrets:
+        - name: argocd-cred
+      nodeSelector:
+        kubernetes.io/os: linux
+
+        kind: Service
+apiVersion: v1
+metadata:
+  name: cssdemo
+spec:
+  type: ClusterIP
+  selector:
+    app: cssdemo
+    tier: frontend
+  ports:
+  - port: 5060
+    targetPort: 5060
